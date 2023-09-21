@@ -2,24 +2,28 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
+using BasicConnectivity;
 
 namespace BasicConnectivityWithClass;
 
 public class Countries
 {
-    static string connectionString = "Data Source=DESKTOP-HM2DN7T; Integrated Security=True;Database=db_hr_dts;Connect Timeout=30;";
-
     public string Id { get; set; }
     public string Name { get; set; }
     public int RegionId { get; set; }
+
+    public override string ToString()
+    {
+        return $"{Id} - {Name} - {RegionId}";
+    }
 
     // GET ALL: Countries
     public List<Countries> GetAll()
     {
         var regions = new List<Countries>();
 
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
         command.CommandText = "SELECT * FROM countries"; // melakukan query yaitu select semua baris dan kolom pada tabel regions
@@ -63,8 +67,8 @@ public class Countries
     public Countries GetById(int regionId)
     {
         var regions = new Countries();
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
         command.CommandText = "SELECT * FROM countries WHERE region_id = @region_id"; // melakukan query yaitu select pada kolom dan baris berdasarkan id yang dipilih
@@ -112,8 +116,8 @@ public class Countries
     // INSERT: Countries
     public string Insert(string id, string name, int regionId)
     {
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan perintah manipulasi dengan tabel database yg ada
         command.CommandText = "INSERT INTO countries VALUES (@id, @name, @region_id);"; // melakukan manipulasi yaitu insert dengan menambahkan data region yang baru
@@ -167,8 +171,8 @@ public class Countries
     // UPDATE: Countries
     public string Update(string id, string name, int regionId)
     {
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
         command.CommandText = "UPDATE countries SET name = @name, region_id = @region_id WHERE id = @id;"; // melakukan manipulasi yaitu update dengan memperbaharui data berdasarkan id dan nama yang dipilih
@@ -223,8 +227,8 @@ public class Countries
     // DELETE: Countries
     public string Delete(string id)
     {
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
         command.CommandText = "DELETE FROM countries WHERE id = @id;"; // melakukan manipulasi yaitu delete dengan menghapus data berdasarkan id  yang dipilih

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
+using BasicConnectivity;
 
 namespace BasicConnectivityWithClass;
 
@@ -16,14 +17,19 @@ public class Locations
     public string State_Province { get; set; }
     public string Country_Id { get; set; }
 
+    public override string ToString()
+    {
+        return $"{Id} - {Street_Address} - {Postal_Code} - {City} - {State_Province} - {Country_Id}";
+    }
+
 
     // GET ALL: Location
     public List<Locations> GetAll()
     {
         var locations = new List<Locations>();
 
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
         command.CommandText = "SELECT * FROM locations"; // melakukan query yaitu select semua baris dan kolom pada tabel regions
@@ -70,8 +76,8 @@ public class Locations
     public Locations GetById(int id)
     {
         var locations = new Locations();
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
         command.CommandText = "SELECT * FROM locations WHERE id = @id"; // melakukan query yaitu select pada kolom dan baris berdasarkan id yang dipilih
@@ -122,8 +128,8 @@ public class Locations
     // INSERT: Location
     public string Insert(int id, string street_address, string postal_code, string city, string state_province, string country_id)
     {
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan perintah manipulasi dengan tabel database yg ada
         command.CommandText = "INSERT INTO locations (id, street_address, postal_code, city, state_province, country_id) VALUES (@id, @street_address, @postal_code, @city, @state_province, @country_id);"; // melakukan manipulasi yaitu insert dengan menambahkan data region yang baru
@@ -195,8 +201,8 @@ public class Locations
     // UPDATE: Location
     public string Update(int id, string street_address, string postal_code, string city, string state_province, string country_id)
     {
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
         command.CommandText = "UPDATE locations SET street_address = @street_address, postal_code = @postal_code, city = @city, state_province = @state_province, country_id = @country_id WHERE id = @id;"; // melakukan manipulasi yaitu update dengan memperbaharui data berdasarkan id dan nama yang dipilih
@@ -269,8 +275,8 @@ public class Locations
     // DELETE: Location
     public string Delete(int id)
     {
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
         command.CommandText = "DELETE FROM locations WHERE id = @id;"; // melakukan manipulasi yaitu delete dengan menghapus data berdasarkan id  yang dipilih

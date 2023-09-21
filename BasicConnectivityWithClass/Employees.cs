@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
 using System.Security.Cryptography;
+using BasicConnectivity;
 
 namespace BasicConnectivityWithClass;
 
 public class Employees
 {
-    static string connectionString = "Data Source=DESKTOP-HM2DN7T; Integrated Security=True;Database=db_hr_dts;Connect Timeout=30;";
-
     public int Id { get; set; }
     public string First_name { get; set; }
     public string Last_Name { get; set; }
@@ -28,8 +27,8 @@ public class Employees
     {
         var locations = new List<Employees>();
 
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
         command.CommandText = "SELECT * FROM employees"; // melakukan query yaitu select semua baris dan kolom pada tabel regions
@@ -82,8 +81,8 @@ public class Employees
     public Employees GetById(int id)
     {
         var employee = new Employees();
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
         command.CommandText = "SELECT * FROM employees WHERE id = @id"; // melakukan query yaitu select pada kolom dan baris berdasarkan id yang dipilih
@@ -139,8 +138,8 @@ public class Employees
     // INSERT: Employee
     public string Insert(int id, string first_name, string last_name, string email, string phone_number, string hire_date, int salary, float comission_pct, int manager_id, string job_id, int departments_id)
     {
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan perintah manipulasi dengan tabel database yg ada
         command.CommandText = "INSERT INTO employees VALUES (@id, @first_name, @last_name, @email, @phone_number, @hire_date, @salary, @comission_pct, @manager_id, @job_id, @departments_id);"; // melakukan manipulasi yaitu insert dengan menambahkan data region yang baru
@@ -242,8 +241,8 @@ public class Employees
     // UPDATE: Employee
     public string Update(int id, string first_name, string last_name, string email, string phone_number, string hire_date, int salary, float comission_pct, int manager_id, string job_id, int departments_id)
     {
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
         command.CommandText = "UPDATE employees SET first_name = @first_name, last_name = @last_name, email = @email, phone_number = @phone_number, hire_date = @hire_date, salary = @salary, comission_pct = @comission_pct, manager_id = @manager_id, job_id = @job_id, department_id = @departments_id  WHERE id = @id;"; // melakukan manipulasi yaitu update dengan memperbaharui data berdasarkan id dan nama yang dipilih
@@ -346,8 +345,8 @@ public class Employees
     // DELETE: Employee
     public string Delete(int id)
     {
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
         command.CommandText = "DELETE FROM employees WHERE id = @id;"; // melakukan manipulasi yaitu delete dengan menghapus data berdasarkan id  yang dipilih

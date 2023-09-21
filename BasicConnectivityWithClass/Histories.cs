@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
+using BasicConnectivity;
 
 namespace BasicConnectivityWithClass;
 
@@ -21,8 +22,8 @@ public class Histories
     {
         var locations = new List<Histories>();
 
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
         command.CommandText = "SELECT * FROM histories"; // melakukan query yaitu select semua baris dan kolom pada tabel regions
@@ -68,8 +69,8 @@ public class Histories
     public Histories GetById(int department_id)
     {
         var history = new Histories();
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
         command.CommandText = "SELECT * FROM histories WHERE departement_id = @department_id"; // melakukan query yaitu select pada kolom dan baris berdasarkan id yang dipilih
@@ -119,8 +120,8 @@ public class Histories
     // INSERT: History
     public string Insert(string start_date, int employee_id, string end_time, int departments_id, string job_id)
     {
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan perintah manipulasi dengan tabel database yg ada
         command.CommandText = "INSERT INTO histories  VALUES (@start_date, @employee_id, @end_time, @departments_id, @job_id);"; // melakukan manipulasi yaitu insert dengan menambahkan data region yang baru
@@ -186,8 +187,8 @@ public class Histories
     // UPDATE: History
     public string Update(string start_date, int employee_id, string end_time, int departments_id, string job_id)
     {
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
         command.CommandText = "UPDATE histories SET start_date = @start_date, employee_id = @employee_id, end_time = @end_time, job_id = @job_id WHERE departement_id = @departments_id;"; // melakukan manipulasi yaitu update dengan memperbaharui data berdasarkan id dan nama yang dipilih
@@ -254,8 +255,8 @@ public class Histories
     // DELETE: History
     public string Delete(int departments_id)
     {
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
         command.CommandText = "DELETE FROM histories WHERE departments_id = @departments_id;"; // melakukan manipulasi yaitu delete dengan menghapus data berdasarkan id  yang dipilih

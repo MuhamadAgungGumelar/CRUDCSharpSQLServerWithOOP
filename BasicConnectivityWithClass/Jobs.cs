@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
+using BasicConnectivity;
+using System.Xml.Linq;
 
 namespace BasicConnectivityWithClass;
 
@@ -14,14 +16,20 @@ public class Jobs
     public int Min_Salary { get; set; }
     public int Max_Salary { get; set; }
 
+    public override string ToString()
+    {
+        return $"{Id} - {Title} - {Min_Salary} - {Max_Salary}";
+    }
+
+
 
     // GET ALL: Job
     public List<Jobs> GetAll()
     {
         var locations = new List<Jobs>();
 
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
         command.CommandText = "SELECT * FROM jobs"; // melakukan query yaitu select semua baris dan kolom pada tabel regions
@@ -66,8 +74,8 @@ public class Jobs
     public Jobs GetById(string id)
     {
         var locations = new Jobs();
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
         command.CommandText = "SELECT * FROM jobs WHERE id = @id"; // melakukan query yaitu select pada kolom dan baris berdasarkan id yang dipilih
@@ -116,8 +124,8 @@ public class Jobs
     // INSERT: Job
     public string Insert(string id, string title, int min_salary, int max_salary)
     {
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan perintah manipulasi dengan tabel database yg ada
         command.CommandText = "INSERT INTO jobs  VALUES (@id, @title, @min_salary, @max_salary);"; // melakukan manipulasi yaitu insert dengan menambahkan data region yang baru
@@ -177,8 +185,8 @@ public class Jobs
     // UPDATE: Job
     public string Update(string id, string title, int min_salary, int max_salary)
     {
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
         command.CommandText = "UPDATE jobs SET title = @title, min_salary = @min_salary, max_salary = @max_salary WHERE id = @id;"; // melakukan manipulasi yaitu update dengan memperbaharui data berdasarkan id dan nama yang dipilih
@@ -239,8 +247,8 @@ public class Jobs
     // DELETE: Job
     public string Delete(string id)
     {
-        using var connection = new SqlConnection(connectionString); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
-        using var command = new SqlCommand(); // Instansiasi untuk menjalankan manipulation atau query database
+        using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
+        using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
         command.CommandText = "DELETE FROM jobs WHERE id = @id;"; // melakukan manipulasi yaitu delete dengan menghapus data berdasarkan id  yang dipilih
