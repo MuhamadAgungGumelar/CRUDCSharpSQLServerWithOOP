@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BasicConnectivityWithClass
+namespace BasicConnectivityWithClass.Views
 {
-    public class GeneralMenu
+    public class GeneralView
     {
         public static void List<T>(List<T> items, string title)
         {

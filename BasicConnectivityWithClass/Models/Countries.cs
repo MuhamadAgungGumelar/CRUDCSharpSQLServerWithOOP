@@ -3,30 +3,31 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
 using BasicConnectivity;
+using System.Diagnostics.Metrics;
 
-namespace BasicConnectivityWithClass;
+namespace BasicConnectivityWithClass.Models;
 
-public class Histories
+public class Countries
 {
-    static string connectionString = "Data Source=DESKTOP-HM2DN7T; Integrated Security=True;Database=db_hr_dts;Connect Timeout=30;";
+    public string Id { get; set; }
+    public string Name { get; set; }
+    public int RegionId { get; set; }
 
-    public DateTime Start_Date { get; set; }
-    public int Employee_Id { get; set; }
-    public DateTime End_Time { get; set; }
-    public int Departments_Id { get; set; }
-    public string Jobs_Id { get; set; }
-
-
-    // GET ALL: History
-    public List<Histories> GetAll()
+    public override string ToString()
     {
-        var locations = new List<Histories>();
+        return $"{Id} - {Name} - {RegionId}";
+    }
+
+    // GET ALL: Countries
+    public List<Countries> GetAll()
+    {
+        var regions = new List<Countries>();
 
         using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
         using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
-        command.CommandText = "SELECT * FROM histories"; // melakukan query yaitu select semua baris dan kolom pada tabel regions
+        command.CommandText = "SELECT * FROM countries"; // melakukan query yaitu select semua baris dan kolom pada tabel regions
 
         try
         {
@@ -39,50 +40,48 @@ public class Histories
             {
                 while (reader.Read())
                 {
-                    locations.Add(new Histories
+                    regions.Add(new Countries
                     {
-                        Start_Date = reader.GetDateTime(0),
-                        Employee_Id = reader.GetInt32(1),
-                        End_Time = reader.GetDateTime(2),
-                        Departments_Id = reader.GetInt32(3),
-                        Jobs_Id = reader.GetString(4),
+                        Id = reader.GetString(0),
+                        Name = reader.GetString(1),
+                        RegionId = reader.GetInt32(2)
                     });
                 }
                 reader.Close(); // menutup sesi membaca data pada tabel
                 connection.Close(); // menutup sesi koneksi ke database
 
-                return locations;
+                return regions;
             }
             reader.Close(); // menutup sesi membaca data pada tabel
             connection.Close(); // menutup sesi koneksi ke database
 
-            return new List<Histories>();
+            return new List<Countries>();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}"); // Pesan Error apabila koneksi ke database gagal
         }
-        return new List<Histories>();
+        return new List<Countries>();
     }
 
-    // GET BY ID: HistoryById
-    public Histories GetById(int department_id)
+    // GET BY ID: CountriesnById
+    public Countries GetById(int regionId)
     {
-        var history = new Histories();
+        var regions = new Countries();
         using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
         using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
-        command.CommandText = "SELECT * FROM histories WHERE departement_id = @department_id"; // melakukan query yaitu select pada kolom dan baris berdasarkan id yang dipilih
+        command.CommandText = "SELECT * FROM countries WHERE region_id = @region_id"; // melakukan query yaitu select pada kolom dan baris berdasarkan id yang dipilih
 
         try
         {
             //mendefine atau menentukan paramater masukan yaitu Id untuk menjadi argument pada query yang dilakukan
-            var pDepartmentsId = new SqlParameter();
-            pDepartmentsId.ParameterName = "@department_id";
-            pDepartmentsId.Value = department_id;
-            pDepartmentsId.SqlDbType = SqlDbType.Int;
-            command.Parameters.Add(pDepartmentsId);
+            var pRegionId = new SqlParameter();
+            pRegionId.ParameterName = "@region_id";
+            pRegionId.Value = regionId;
+            pRegionId.SqlDbType = SqlDbType.Int;
+            command.Parameters.Add(pRegionId);
 
 
             connection.Open(); // membuka koneksi database
@@ -94,70 +93,56 @@ public class Histories
             {
                 while (reader.Read())
                 {
-                    history.Start_Date = reader.GetDateTime(0);
-                    history.Employee_Id = reader.GetInt32(1);
-                    history.End_Time = reader.GetDateTime(2);
-                    history.Departments_Id = reader.GetInt32(3);
-                    history.Jobs_Id = reader.GetString(4);
+                    regions.Id = reader.GetString(0);
+                    regions.Name = reader.GetString(1);
+                    regions.RegionId = reader.GetInt32(2);
                 }
                 reader.Close(); // menutup sesi membaca data pada tabel
                 connection.Close(); // menutup sesi koneksi ke database
 
-                return history;
+                return regions;
             }
             reader.Close(); // menutup sesi membaca data pada tabel
             connection.Close(); // menutup sesi koneksi ke database
 
-            return new Histories();
+            return new Countries();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}"); // Pesan Error apabila koneksi ke database gagal
         }
-        return new Histories();
+        return new Countries();
     }
 
-    // INSERT: History
-    public string Insert(string start_date, int employee_id, string end_time, int departments_id, string job_id)
+    // INSERT: Countries
+    public string Insert(Countries country)
     {
         using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
         using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan perintah manipulasi dengan tabel database yg ada
-        command.CommandText = "INSERT INTO histories  VALUES (@start_date, @employee_id, @end_time, @departments_id, @job_id);"; // melakukan manipulasi yaitu insert dengan menambahkan data region yang baru
+        command.CommandText = "INSERT INTO countries VALUES (@id, @name, @region_id);"; // melakukan manipulasi yaitu insert dengan menambahkan data region yang baru
 
         try
         {
             //mendefine atau menentukan paramater masukan yaitu Name untuk menjadi argument pada manipulasi yang dilakukan
-            var pStartDate = new SqlParameter();
-            pStartDate.ParameterName = "@start_date";
-            pStartDate.Value = start_date;
-            pStartDate.SqlDbType = SqlDbType.DateTime;
-            command.Parameters.Add(pStartDate);
+            var pId = new SqlParameter();
+            pId.ParameterName = "@id";
+            pId.Value = country.Id;
+            pId.SqlDbType = SqlDbType.VarChar;
+            command.Parameters.Add(pId);
 
-            var pEmployeeId = new SqlParameter();
-            pEmployeeId.ParameterName = "@employee_id";
-            pEmployeeId.Value = employee_id;
-            pEmployeeId.SqlDbType = SqlDbType.Int;
-            command.Parameters.Add(pEmployeeId);
+            var pName = new SqlParameter();
+            pName.ParameterName = "@name";
+            pName.Value = country.Name;
+            pName.SqlDbType = SqlDbType.VarChar;
+            command.Parameters.Add(pName);
 
-            var pEndTime = new SqlParameter();
-            pEndTime.ParameterName = "@end_time";
-            pEndTime.Value = end_time;
-            pEndTime.SqlDbType = SqlDbType.DateTime;
-            command.Parameters.Add(pEndTime);
-
-            var pDepartmentsId = new SqlParameter();
-            pDepartmentsId.ParameterName = "@departments_id";
-            pDepartmentsId.Value = departments_id;
-            pDepartmentsId.SqlDbType = SqlDbType.Int;
-            command.Parameters.Add(pDepartmentsId);
-
-            var pJobsId = new SqlParameter();
-            pJobsId.ParameterName = "@job_id";
-            pJobsId.Value = job_id;
-            pJobsId.SqlDbType = SqlDbType.VarChar;
-            command.Parameters.Add(pJobsId);
+            var pRegionId = new SqlParameter();
+            pRegionId.ParameterName = "@region_id";
+            pRegionId.Value = country.RegionId;
+            pRegionId.SqlDbType = SqlDbType.Int;
+            command.Parameters.Add(pRegionId);
 
             connection.Open(); // membuka koneksi database
             using var transaction = connection.BeginTransaction(); // menjalankan method transaksi, bertujuan untuk merecord manipulasi data yang dilakukan. 
@@ -184,47 +169,35 @@ public class Histories
         }
     }
 
-    // UPDATE: History
-    public string Update(string start_date, int employee_id, string end_time, int departments_id, string job_id)
+    // UPDATE: Countries
+    public string Update(Countries country)
     {
         using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
         using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
-        command.CommandText = "UPDATE histories SET start_date = @start_date, employee_id = @employee_id, end_time = @end_time, job_id = @job_id WHERE departement_id = @departments_id;"; // melakukan manipulasi yaitu update dengan memperbaharui data berdasarkan id dan nama yang dipilih
+        command.CommandText = "UPDATE countries SET name = @name, region_id = @region_id WHERE id = @id;"; // melakukan manipulasi yaitu update dengan memperbaharui data berdasarkan id dan nama yang dipilih
 
         try
         {
             //mendefine atau menentukan paramater masukan yaitu Name untuk menjadi argument pada manipulasi yang dilakukan
-            var pStartDate = new SqlParameter();
-            pStartDate.ParameterName = "@start_date";
-            pStartDate.Value = start_date;
-            pStartDate.SqlDbType = SqlDbType.DateTime;
-            command.Parameters.Add(pStartDate);
+            var pId = new SqlParameter();
+            pId.ParameterName = "@id";
+            pId.Value = country.Id;
+            pId.SqlDbType = SqlDbType.VarChar;
+            command.Parameters.Add(pId);
 
-            var pEmployeeId = new SqlParameter();
-            pEmployeeId.ParameterName = "@employee_id";
-            pEmployeeId.Value = employee_id;
-            pEmployeeId.SqlDbType = SqlDbType.Int;
-            command.Parameters.Add(pEmployeeId);
+            var pName = new SqlParameter();
+            pName.ParameterName = "@name";
+            pName.Value = country.Name;
+            pName.SqlDbType = SqlDbType.VarChar;
+            command.Parameters.Add(pName);
 
-            var pEndTime = new SqlParameter();
-            pEndTime.ParameterName = "@end_time";
-            pEndTime.Value = end_time;
-            pEndTime.SqlDbType = SqlDbType.DateTime;
-            command.Parameters.Add(pEndTime);
-
-            var pDepartmentsId = new SqlParameter();
-            pDepartmentsId.ParameterName = "@departments_id";
-            pDepartmentsId.Value = departments_id;
-            pDepartmentsId.SqlDbType = SqlDbType.Int;
-            command.Parameters.Add(pDepartmentsId);
-
-            var pJobsId = new SqlParameter();
-            pJobsId.ParameterName = "@job_id";
-            pJobsId.Value = job_id;
-            pJobsId.SqlDbType = SqlDbType.VarChar;
-            command.Parameters.Add(pJobsId);
+            var pRegionId = new SqlParameter();
+            pRegionId.ParameterName = "@region_id";
+            pRegionId.Value = country.RegionId;
+            pRegionId.SqlDbType = SqlDbType.Int;
+            command.Parameters.Add(pRegionId);
 
             connection.Open(); // membuka koneksi database
             using var transaction = connection.BeginTransaction(); // menjalankan method transaksi, bertujuan untuk merecord manipulasi data yang dilakukan. 
@@ -252,23 +225,23 @@ public class Histories
 
     }
 
-    // DELETE: History
-    public string Delete(int departments_id)
+    // DELETE: Countries
+    public string Delete(string id)
     {
         using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
         using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
-        command.CommandText = "DELETE FROM histories WHERE departments_id = @departments_id;"; // melakukan manipulasi yaitu delete dengan menghapus data berdasarkan id  yang dipilih
+        command.CommandText = "DELETE FROM countries WHERE id = @id;"; // melakukan manipulasi yaitu delete dengan menghapus data berdasarkan id  yang dipilih
 
         try
         {
             //mendefine atau menentukan paramater masukan yaitu Name untuk menjadi argument pada manipulasi yang dilakukan
-            var pDepartmentsId = new SqlParameter();
-            pDepartmentsId.ParameterName = "@departments_id";
-            pDepartmentsId.Value = departments_id;
-            pDepartmentsId.SqlDbType = SqlDbType.Int;
-            command.Parameters.Add(pDepartmentsId);
+            var pId = new SqlParameter();
+            pId.ParameterName = "@id";
+            pId.Value = id;
+            pId.SqlDbType = SqlDbType.VarChar;
+            command.Parameters.Add(pId);
 
             connection.Open(); // membuka koneksi database
             using var transaction = connection.BeginTransaction(); // menjalankan method transaksi, bertujuan untuk merecord manipulasi data yang dilakukan. 

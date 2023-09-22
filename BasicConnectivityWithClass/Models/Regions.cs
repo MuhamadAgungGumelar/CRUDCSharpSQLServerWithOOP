@@ -3,36 +3,29 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
 using BasicConnectivity;
-using System.Xml.Linq;
 
 namespace BasicConnectivityWithClass;
 
-public class Jobs
+public class Regions
 {
-    static string connectionString = "Data Source=DESKTOP-HM2DN7T; Integrated Security=True;Database=db_hr_dts;Connect Timeout=30;";
-
-    public string Id { get; set; }
-    public string Title { get; set; }
-    public int Min_Salary { get; set; }
-    public int Max_Salary { get; set; }
+    public int Id { get; set; }
+    public string Name { get; set; }
 
     public override string ToString()
     {
-        return $"{Id} - {Title} - {Min_Salary} - {Max_Salary}";
+        return $"{Id} - {Name}";
     }
 
-
-
-    // GET ALL: Job
-    public List<Jobs> GetAll()
+    // GET ALL: Region
+    public List<Regions> GetAll()
     {
-        var locations = new List<Jobs>();
+        var regions = new List<Regions>();
 
         using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
         using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
-        command.CommandText = "SELECT * FROM jobs"; // melakukan query yaitu select semua baris dan kolom pada tabel regions
+        command.CommandText = "SELECT * FROM regions"; // melakukan query yaitu select semua baris dan kolom pada tabel regions
 
         try
         {
@@ -45,50 +38,49 @@ public class Jobs
             {
                 while (reader.Read())
                 {
-                    locations.Add(new Jobs
+                    regions.Add(new Regions
                     {
-                        Id = reader.GetString(0),
-                        Title = reader.GetString(1),
-                        Min_Salary = reader.GetInt32(2),
-                        Max_Salary = reader.GetInt32(3),
+                        Id = reader.GetInt32(0),
+                        Name = reader.GetString(1)
                     });
                 }
                 reader.Close(); // menutup sesi membaca data pada tabel
                 connection.Close(); // menutup sesi koneksi ke database
 
-                return locations;
+                return regions;
             }
             reader.Close(); // menutup sesi membaca data pada tabel
             connection.Close(); // menutup sesi koneksi ke database
 
-            return new List<Jobs>();
+            return new List<Regions>();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}"); // Pesan Error apabila koneksi ke database gagal
         }
-        return new List<Jobs>();
+        return new List<Regions>();
     }
 
-    // GET BY ID: JobById
-    public Jobs GetById(string id)
+    // GET BY ID: RegionById
+    public Regions GetById(int id)
     {
-        var locations = new Jobs();
+        var regions = new Regions();
         using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
         using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
-        command.CommandText = "SELECT * FROM jobs WHERE id = @id"; // melakukan query yaitu select pada kolom dan baris berdasarkan id yang dipilih
+        command.CommandText = "SELECT * FROM regions WHERE id = @id"; // melakukan query yaitu select pada kolom dan baris berdasarkan id yang dipilih
 
         try
         {
             //mendefine atau menentukan paramater masukan yaitu Id untuk menjadi argument pada query yang dilakukan
-            var pId = new SqlParameter();
-            pId.ParameterName = "@id";
-            pId.Value = id;
-            pId.SqlDbType = SqlDbType.VarChar;
-            command.Parameters.Add(pId);
-
+            var pId = Provider.SetParameter("@id", id);
+            /*
+                pId.ParameterName = "@id";
+                pId.Value = id;
+                pId.SqlDbType = SqlDbType.Int;
+                command.Parameters.Add(pId);
+            */
 
             connection.Open(); // membuka koneksi database
 
@@ -99,63 +91,43 @@ public class Jobs
             {
                 while (reader.Read())
                 {
-                    locations.Id = reader.GetString(0);
-                    locations.Title = reader.GetString(1);
-                    locations.Min_Salary = reader.GetInt32(2);
-                    locations.Max_Salary = reader.GetInt32(3);
+                    regions.Id = reader.GetInt32(0);
+                    regions.Name = reader.GetString(1);
                 }
                 reader.Close(); // menutup sesi membaca data pada tabel
                 connection.Close(); // menutup sesi koneksi ke database
 
-                return locations;
+                return regions;
             }
             reader.Close(); // menutup sesi membaca data pada tabel
             connection.Close(); // menutup sesi koneksi ke database
 
-            return new Jobs();
+            return new Regions();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}"); // Pesan Error apabila koneksi ke database gagal
         }
-        return new Jobs();
+        return new Regions();
     }
 
-    // INSERT: Job
-    public string Insert(string id, string title, int min_salary, int max_salary)
+    // INSERT: Region
+    public string Insert(Regions region)
     {
         using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
         using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan perintah manipulasi dengan tabel database yg ada
-        command.CommandText = "INSERT INTO jobs  VALUES (@id, @title, @min_salary, @max_salary);"; // melakukan manipulasi yaitu insert dengan menambahkan data region yang baru
+        command.CommandText = "INSERT INTO regions VALUES (@name);"; // melakukan manipulasi yaitu insert dengan menambahkan data region yang baru
 
         try
         {
             //mendefine atau menentukan paramater masukan yaitu Name untuk menjadi argument pada manipulasi yang dilakukan
-            var pId = new SqlParameter();
-            pId.ParameterName = "@id";
-            pId.Value = id;
-            pId.SqlDbType = SqlDbType.VarChar;
-            command.Parameters.Add(pId);
-
-            var pTitle = new SqlParameter();
-            pTitle.ParameterName = "@title";
-            pTitle.Value = title;
-            pTitle.SqlDbType = SqlDbType.VarChar;
-            command.Parameters.Add(pTitle);
-
-            var pMinSalary = new SqlParameter();
-            pMinSalary.ParameterName = "@min_salary";
-            pMinSalary.Value = min_salary;
-            pMinSalary.SqlDbType = SqlDbType.Int;
-            command.Parameters.Add(pMinSalary);
-
-            var pMaxSalary = new SqlParameter();
-            pMaxSalary.ParameterName = "@max_salary";
-            pMaxSalary.Value = max_salary;
-            pMaxSalary.SqlDbType = SqlDbType.Int;
-            command.Parameters.Add(pMaxSalary);
+            var pName = new SqlParameter();
+            pName.ParameterName = "@name";
+            pName.Value = region.Name;
+            pName.SqlDbType = SqlDbType.VarChar;
+            command.Parameters.Add(pName);
 
             connection.Open(); // membuka koneksi database
             using var transaction = connection.BeginTransaction(); // menjalankan method transaksi, bertujuan untuk merecord manipulasi data yang dilakukan. 
@@ -182,41 +154,29 @@ public class Jobs
         }
     }
 
-    // UPDATE: Job
-    public string Update(string id, string title, int min_salary, int max_salary)
+    // UPDATE: Region
+    public string Update(Regions region)
     {
         using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
         using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
-        command.CommandText = "UPDATE jobs SET title = @title, min_salary = @min_salary, max_salary = @max_salary WHERE id = @id;"; // melakukan manipulasi yaitu update dengan memperbaharui data berdasarkan id dan nama yang dipilih
+        command.CommandText = "UPDATE regions SET name = @name WHERE id = @id;"; // melakukan manipulasi yaitu update dengan memperbaharui data berdasarkan id dan nama yang dipilih
 
         try
         {
             //mendefine atau menentukan paramater masukan yaitu Name untuk menjadi argument pada manipulasi yang dilakukan
             var pId = new SqlParameter();
             pId.ParameterName = "@id";
-            pId.Value = id;
-            pId.SqlDbType = SqlDbType.VarChar;
+            pId.Value = region.Id;
+            pId.SqlDbType = SqlDbType.Int;
             command.Parameters.Add(pId);
 
-            var pTitle = new SqlParameter();
-            pTitle.ParameterName = "@title";
-            pTitle.Value = title;
-            pTitle.SqlDbType = SqlDbType.VarChar;
-            command.Parameters.Add(pTitle);
-
-            var pMinSalary = new SqlParameter();
-            pMinSalary.ParameterName = "@min_salary";
-            pMinSalary.Value = min_salary;
-            pMinSalary.SqlDbType = SqlDbType.Int;
-            command.Parameters.Add(pMinSalary);
-
-            var pMaxSalary = new SqlParameter();
-            pMaxSalary.ParameterName = "@max_salary";
-            pMaxSalary.Value = max_salary;
-            pMaxSalary.SqlDbType = SqlDbType.Int;
-            command.Parameters.Add(pMaxSalary);
+            var pName = new SqlParameter();
+            pName.ParameterName = "@name";
+            pName.Value = region.Name;
+            pName.SqlDbType = SqlDbType.VarChar;
+            command.Parameters.Add(pName);
 
             connection.Open(); // membuka koneksi database
             using var transaction = connection.BeginTransaction(); // menjalankan method transaksi, bertujuan untuk merecord manipulasi data yang dilakukan. 
@@ -244,14 +204,14 @@ public class Jobs
 
     }
 
-    // DELETE: Job
-    public string Delete(string id)
+    // DELETE: Region
+    public string Delete(int id)
     {
         using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
         using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
 
         command.Connection = connection; // menghubungkan query dengan tabel database yg ada
-        command.CommandText = "DELETE FROM jobs WHERE id = @id;"; // melakukan manipulasi yaitu delete dengan menghapus data berdasarkan id  yang dipilih
+        command.CommandText = "DELETE FROM regions WHERE id = @id;"; // melakukan manipulasi yaitu delete dengan menghapus data berdasarkan id  yang dipilih
 
         try
         {
@@ -259,7 +219,7 @@ public class Jobs
             var pId = new SqlParameter();
             pId.ParameterName = "@id";
             pId.Value = id;
-            pId.SqlDbType = SqlDbType.VarChar;
+            pId.SqlDbType = SqlDbType.Int;
             command.Parameters.Add(pId);
 
             connection.Open(); // membuka koneksi database

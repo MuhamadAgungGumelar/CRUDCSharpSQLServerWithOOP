@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 using System.Data;
 using BasicConnectivity;
 
-namespace BasicConnectivityWithClass;
+namespace BasicConnectivityWithClass.Models;
 
 public class Locations
 {
@@ -126,7 +126,7 @@ public class Locations
     }
 
     // INSERT: Location
-    public string Insert(int id, string street_address, string postal_code, string city, string state_province, string country_id)
+    public string Insert(Locations location)
     {
         using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
         using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
@@ -139,37 +139,37 @@ public class Locations
             //mendefine atau menentukan paramater masukan yaitu Name untuk menjadi argument pada manipulasi yang dilakukan
             var pId = new SqlParameter();
             pId.ParameterName = "@id";
-            pId.Value = id;
+            pId.Value = location.Id;
             pId.SqlDbType = SqlDbType.Int;
             command.Parameters.Add(pId);
 
             var pStreetAddress = new SqlParameter();
             pStreetAddress.ParameterName = "@street_address";
-            pStreetAddress.Value = street_address;
+            pStreetAddress.Value = location.Street_Address;
             pStreetAddress.SqlDbType = SqlDbType.VarChar;
             command.Parameters.Add(pStreetAddress);
 
             var pPostalCode = new SqlParameter();
             pPostalCode.ParameterName = "@postal_code";
-            pPostalCode.Value = postal_code;
+            pPostalCode.Value = location.Postal_Code;
             pPostalCode.SqlDbType = SqlDbType.VarChar;
             command.Parameters.Add(pPostalCode);
 
             var pCity = new SqlParameter();
             pCity.ParameterName = "@city";
-            pCity.Value = city;
+            pCity.Value = location.City;
             pCity.SqlDbType = SqlDbType.VarChar;
             command.Parameters.Add(pCity);
 
             var pStateProvince = new SqlParameter();
             pStateProvince.ParameterName = "@state_province";
-            pStateProvince.Value = state_province;
+            pStateProvince.Value = location.State_Province;
             pStateProvince.SqlDbType = SqlDbType.VarChar;
             command.Parameters.Add(pStateProvince);
 
             var pCountryId = new SqlParameter();
             pCountryId.ParameterName = "@country_id";
-            pCountryId.Value = country_id;
+            pCountryId.Value = location.Country_Id;
             pCountryId.SqlDbType = SqlDbType.VarChar;
             command.Parameters.Add(pCountryId);
 
@@ -199,7 +199,7 @@ public class Locations
     }
 
     // UPDATE: Location
-    public string Update(int id, string street_address, string postal_code, string city, string state_province, string country_id)
+    public string Update(Locations location)
     {
         using var connection = Provider.GetConnection(); // Instansiasi untuk connect ke database dengan argument data autentikasi yang sudah di define sebelumnya
         using var command = Provider.GetCommand(); // Instansiasi untuk menjalankan manipulation atau query database
@@ -212,37 +212,37 @@ public class Locations
             //mendefine atau menentukan paramater masukan yaitu Name untuk menjadi argument pada manipulasi yang dilakukan
             var pId = new SqlParameter();
             pId.ParameterName = "@id";
-            pId.Value = id;
+            pId.Value = location.Id;
             pId.SqlDbType = SqlDbType.Int;
             command.Parameters.Add(pId);
 
             var pStreetAddress = new SqlParameter();
             pStreetAddress.ParameterName = "@street_address";
-            pStreetAddress.Value = street_address;
+            pStreetAddress.Value = location.Street_Address;
             pStreetAddress.SqlDbType = SqlDbType.VarChar;
             command.Parameters.Add(pStreetAddress);
 
             var pPostalCode = new SqlParameter();
             pPostalCode.ParameterName = "@postal_code";
-            pPostalCode.Value = postal_code;
+            pPostalCode.Value = location.Postal_Code;
             pPostalCode.SqlDbType = SqlDbType.VarChar;
             command.Parameters.Add(pPostalCode);
 
             var pCity = new SqlParameter();
             pCity.ParameterName = "@city";
-            pCity.Value = city;
+            pCity.Value = location.City;
             pCity.SqlDbType = SqlDbType.VarChar;
             command.Parameters.Add(pCity);
 
             var pStateProvince = new SqlParameter();
             pStateProvince.ParameterName = "@state_province";
-            pStateProvince.Value = state_province;
+            pStateProvince.Value = location.State_Province;
             pStateProvince.SqlDbType = SqlDbType.VarChar;
             command.Parameters.Add(pStateProvince);
 
             var pCountryId = new SqlParameter();
             pCountryId.ParameterName = "@country_id";
-            pCountryId.Value = country_id;
+            pCountryId.Value = location.Country_Id;
             pCountryId.SqlDbType = SqlDbType.VarChar;
             command.Parameters.Add(pCountryId);
 

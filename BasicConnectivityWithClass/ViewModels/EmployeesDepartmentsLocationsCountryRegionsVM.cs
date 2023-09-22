@@ -1,4 +1,4 @@
-﻿namespace BasicConnectivity;
+﻿namespace BasicConnectivityWithClass.ViewModels;
 
 public class EmployeesDepartmentsLocationsCountryRegionsVM
 {
